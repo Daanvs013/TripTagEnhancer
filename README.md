@@ -1,3 +1,3 @@
 # TripTagEnhancer
 
-Vereist Map Enhancer en DIO-Tools
+TripTags op het eilanden scherm vereist dat DIO-Tools is geinstalleerd.
