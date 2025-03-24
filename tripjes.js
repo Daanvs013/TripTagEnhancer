@@ -25,13 +25,15 @@
         if (laadSettings().trip_module == true){
             // maak een wrapper function over de createTownDiv function
             // voordat een stad wordt gemaakt op de kaart, run eerst mijn functie en dan pas de grepo functie
-            var wrapper = function(originalFunc) {
-                return function() {
-                    var wrapper = originalFunc.apply(this, arguments);
-                    return generateTripjesOpKaart(wrapper, arguments);
+            if (laadSettings().auto_trip_kaart == true){
+                var wrapper = function(originalFunc) {
+                    return function() {
+                        var wrapper = originalFunc.apply(this, arguments);
+                        return generateTripjesOpKaart(wrapper, arguments);
+                    };
                 };
-            };
-            MapTiles.createTownDiv = wrapper(MapTiles.createTownDiv);
+                MapTiles.createTownDiv = wrapper(MapTiles.createTownDiv);
+            }
 
             // timer om te checken of de knop moet worden geplaatst
             // er kan maar maximaal 1 profiel tegelijk open staan
@@ -65,26 +67,26 @@
     });
 
     function resetSettings(){
-        GM_setValue("archduke_menu_auto_trip_kaart", false)
-        GM_setValue("archduke_menu_auto_trip_eiland", false)
+        GM_setValue("archduke_menu_auto_trip_kaart", true)
+        GM_setValue("archduke_menu_auto_trip_eiland", true)
         GM_setValue("archduke_menu_auto_trip_profiel", false)
         GM_setValue("archduke_menu_trip_allianties", [])
         GM_setValue("archduke_menu_trip_spelers", [])
         GM_setValue("archduke_menu_trip_eigen_stad", false)
         GM_setValue("archduke_menu_trip_pos_x", 70)
         GM_setValue("archduke_menu_trip_pos_y", 60)
-        
+        GM_setValue("archduke_menu_trip_module", true)
     }
 
     // verkrijg de voorkeuren
     function laadSettings(){
         var auto_trip_kaart = GM_getValue('archduke_menu_auto_trip_kaart')
         if (auto_trip_kaart == null){
-            auto_trip_kaart = false
+            auto_trip_kaart = true
         }
         var auto_trip_eiland = GM_getValue('archduke_menu_auto_trip_eiland')
         if (auto_trip_eiland == null){
-            auto_trip_eiland = false
+            auto_trip_eiland = true
         }
         var auto_trip_profiel = GM_getValue('archduke_menu_auto_trip_profiel')
         if (auto_trip_profiel == null){
@@ -438,7 +440,7 @@
 
         // maak alle knopjes
         instelling.createCheckBox("Activeer de trip detector ( vereist refresh van de pagina )","trip_module")
-        instelling.createCheckBox("Weergeef automatisch de trip tags op de kaart","auto_trip_kaart")
+        instelling.createCheckBox("Weergeef automatisch de trip tags op de kaart ( vereist refresh van de pagina )","auto_trip_kaart")
         instelling.createCheckBox("Weergeef automatisch de trip tags op het eiland scherm","auto_trip_eiland")
         instelling.createCheckBox("Weergeef automatisch de trip tags op het profiel van een speler","auto_trip_profiel")
         instelling.createCheckBox("Weergeef trip tags bij je eigen steden","trip_eigen_stad")
